@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cambiar color de fondo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      transition: background-color 0.4s ease;
+      background-color: #f4f4f4; /* color inicial antes de hacer clic */
+      padding: 20px;
+    }
+
+    /* Configuración del título */
+    h1 { 
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #222;
+    }
+
+    /* Configuración del párrafo */
+    p {
+      font-size: 1.1rem;
+      color: #444;
+      margin-bottom: 25px;
+      max-width: 500px;
+    }
+
+
+    button {
+      padding: 12px 28px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #333;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    button:active {
+      transform: scale(0.96);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Cambiador de color</h1>
+  <p>Hacé clic en el botón para cambiar el color de fondo de la página a uno aleatorio.</p>
+  <button id="btnCambiarColor">Cambiar color</button>
+
+  <script>
+    // Buscamos el botón en el DOM usando su id, para poder escucharle clics.
+    const boton = document.getElementById('btnCambiarColor');
+
+    // Genera un color aleatorio en formato hexadecimal (ej: #A3F2C1).
+    function generarColorAleatorio() {
+
+      const letras = '0123456789ABCDEF';
+
+      // Arrancamos el color con el símbolo # que exige el formato CSS.
+      let color = '#';
+
+      // Repetimos 6 veces: elegimos una letra al azar y la sumamos al color.
+      for (let i = 0; i < 6; i++) {
+         color += letras[Math.floor(Math.random() * 16)];
+      }
+        // Math.random() da un decimal entre 0 y 1 (sin llegar a 1).
+        // Lo multiplicamos por 16 (cantidad de caracteres posibles)
+        // y redondeamos hacia abajo con Math.floor() para tener
+        // un índice entero válido dentro de "letras" (0 a 15).
+       
+      return color; // ej: "#1F9AE0"
+    }
+
+    // addEventListener registra una función que se ejecuta
+    // automáticamente cada vez que el usuario hace clic en el botón.
+    boton.addEventListener('click', () => {
+      document.body.style.backgroundColor = generarColorAleatorio();
+    });
+  </script>
+
+</body>
+</html>
