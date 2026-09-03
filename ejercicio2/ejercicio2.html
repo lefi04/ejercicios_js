@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista de tareas</title>
+<style>
+  /* box-sizing: border-box hace que padding y border no agranden
+     el ancho/alto declarado de un elemento (más fácil de calcular medidas) */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Centra la tarjeta en el medio de la pantalla, tanto vertical como horizontal */
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1b1f24;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+  }
+
+  /* La "tarjeta" que contiene todo el formulario y la lista */
+  .card {
+    width: 100%;
+    max-width: 420px;
+    background: #262b32;
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+
+  h1 {
+    color: #f2f4f6;
+    font-size: 22px;
+    margin: 0 0 20px;
+  }
+
+  /* Fila con el input y el botón, uno al lado del otro (flexbox) */
+  .input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  #task-input {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #3c434d;
+    background: #1b1f24;
+    color: #f2f4f6;
+    font-size: 15px;
+    outline: none;
+  }
+
+  #task-input:focus {
+    border-color: #5b8cff;
+  }
+
+  #add-btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #5b8cff;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  #add-btn:hover {
+    background: #4577f0;
+  }
+
+  /* Le sacamos los "puntitos" nativos de la lista, para armar nuestro propio estilo */
+  #task-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Estilo de cada tarea individual dentro de la lista */
+  #task-list li {
+    padding: 12px 14px;
+    background: #1b1f24;
+    border-radius: 8px;
+    color: #e2e5e9;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+    word-break: break-word;
+  }
+
+  #task-list li:hover {
+    background: #33393f;
+  }
+
+  /* ::before agrega contenido "falso" antes del texto de cada <li>, sin tocar el HTML */
+  #task-list li::before {
+    content: "✓  ";
+    color: #5b8cff;
+  }
+
+  /* Estilo del mensaje que aparece cuando no hay tareas cargadas */
+  .empty-msg {
+    color: #7c848d;
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 0;
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Mi lista de tareas</h1>
+
+    <div class="input-row">
+      <input type="text" id="task-input" placeholder="Escribí una tarea...">
+      <button id="add-btn">Agregar</button>
+    </div>
+
+    <ul id="task-list"></ul>
+  </div>
+
+<script>
+  /* ===========================================================
+     1) REFERENCIAS AL DOM
+     Guardamos en variables los elementos con los que vamos a
+     trabajar, para no tener que buscarlos cada vez con
+     getElementById.
+     =========================================================== */
+  const input = document.getElementById('task-input');  // el <input> de texto
+  const addBtn = document.getElementById('add-btn');    // el botón "Agregar"
+  const list = document.getElementById('task-list');    // el <ul> donde van las tareas
+
+
+  function showEmptyMessageIfNeeded() {
+    // Buscamos si hay algún <li> que NO sea el mensaje de vacío
+    const hasTasks = list.querySelector('li:not(.empty-msg)');
+    // Buscamos si el mensaje de vacío ya está mostrado
+    const existingMsg = list.querySelector('.empty-msg');
+
+    // Solo agregamos el mensaje si no hay tareas Y el mensaje no está ya puesto
+    // (evita duplicarlo)
+    if (!hasTasks && !existingMsg) {
+      const msg = document.createElement('li');
+      msg.className = 'empty-msg';
+      msg.textContent = 'No hay tareas todavía';
+      list.appendChild(msg);
+    }
+  }
+
+  function removeEmptyMessage() {
+    const existingMsg = list.querySelector('.empty-msg');
+    if (existingMsg) existingMsg.remove();
+  }
+
+
+    // AGREGAR UNA TAREA
+  
+  function addTask() {
+    // .trim() saca espacios en blanco al principio/final
+    // (así "   " no cuenta como tarea válida)
+    const text = input.value.trim();
+
+    // Si el input está vacío, no hacemos nada y volvemos a enfocar
+    if (text === '') {
+      input.focus();
+      return;
+    }
+
+    // Si había un mensaje de "lista vacía", lo sacamos porque ya no aplica
+    removeEmptyMessage();
+
+    // Creamos un elemento <li> nuevo en memoria (todavía no está en la página)
+    const li = document.createElement('li');
+    li.textContent = text;
+
+    // LÓGICA DE ELIMINACIÓN:
+    li.addEventListener('click', () => {
+      li.remove();
+      showEmptyMessageIfNeeded(); // por si esa era la última tarea
+    });
+
+    // Recién acá el <li> se inserta de verdad en el <ul> y se ve en pantalla
+    list.appendChild(li);
+
+    // Limpiamos el input y le devolvemos el foco para seguir cargando tareas rápido
+    input.value = '';
+    input.focus();
+  }
+
+  // Click en el botón "Agregar"
+  addBtn.addEventListener('click', addTask);
+
+  // Presionar la tecla Enter estando parado en el input
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') addTask();
+  });
+
+  showEmptyMessageIfNeeded();
+</script>
+
+</body>
+</html>
