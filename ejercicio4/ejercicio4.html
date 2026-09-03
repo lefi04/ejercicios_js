@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contador</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1b1f24;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+  }
+
+  .card {
+    background: #262b32;
+    border-radius: 14px;
+    padding: 32px 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    text-align: center;
+  }
+
+  h1 {
+    color: #f2f4f6;
+    font-size: 20px;
+    margin: 0 0 24px;
+  }
+
+  /* El número grande que muestra el valor actual del contador */
+  #count-display {
+    font-size: 56px;
+    font-weight: 700;
+    color: #f2f4f6;
+    margin-bottom: 24px;
+    min-width: 100px;
+  }
+
+  /* Fila con los dos botones, uno al lado del otro */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  button {
+    width: 56px;
+    height: 56px;
+    border: none;
+    border-radius: 10px;
+    font-size: 24px;
+    font-weight: 700;
+    cursor: pointer;
+    color: white;
+  }
+
+  /* Botón de restar: rojo */
+  #decrement-btn {
+    background: #e5484d;
+  }
+
+  #decrement-btn:hover {
+    background: #cc3f44;
+  }
+
+  /* Botón de sumar: azul */
+  #increment-btn {
+    background: #5b8cff;
+  }
+
+  #increment-btn:hover {
+    background: #4577f0;
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Contador</h1>
+
+    <!-- Acá se muestra el número actual. Arranca en 0 -->
+    <div id="count-display">0</div>
+
+    <div class="btn-row">
+      <button id="decrement-btn">-</button>
+      <button id="increment-btn">+</button>
+    </div>
+  </div>
+
+<script>
+
+  const countDisplay = document.getElementById('count-display');
+  const incrementBtn = document.getElementById('increment-btn');
+  const decrementBtn = document.getElementById('decrement-btn');
+
+  let count = 0;
+  function updateDisplay() {
+    countDisplay.textContent = count;
+  }
+
+  function increment() {
+    count = count + 1; 
+    updateDisplay();
+  }
+
+  function decrement() {
+    count = count - 1; 
+    updateDisplay();
+  }
+
+
+  incrementBtn.addEventListener('click', increment);
+  decrementBtn.addEventListener('click', decrement);
+</script>
+
+</body>
+</html>
